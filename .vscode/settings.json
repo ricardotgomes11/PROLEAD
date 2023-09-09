@@ -1,0 +1,9 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/sky/Documents/GitHub/PROLEAD/debug",
+            "binaryPath": "/Users/sky/Documents/GitHub/PROLEAD/debug/PROLEAD",
+            "binaryArgs": []
+        }
+    ]
+}
