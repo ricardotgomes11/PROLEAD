@@ -9,31 +9,32 @@ from common_utils import *
 class local_AES:
     aes = None
     iv = None
-    def  __init__(self, key, mode, iv=None, counter=None):
+    def __init__(self, key, mode, iv=None, counter=None):
         if is_python_2() == False: 
             key = key.encode('latin-1')
-        if iv != None:
-            self.iv = iv
-            if is_python_2() == False: 
-                iv = iv.encode('latin-1')
+        if iv is None:
             if mode == AES.MODE_CTR:
-                if counter == None:
-                    self.aes = AES.new(key, mode, counter=self.counter_inc)
-                else:
-                    self.aes = AES.new(key, mode, counter=counter)
-            else:
-                self.aes = AES.new(key, mode, iv)
-            return
-        else:
-            if mode == AES.MODE_CTR:
-                if counter == None:
+                if counter is None:
                     self.iv = expand(inttostring(0), 128, "LEFT")
                     self.aes = AES.new(key, mode, counter=self.counter_inc)
                 else:
                     self.aes = AES.new(key, mode, counter=counter)
             else:
                 self.aes = AES.new(key, mode)
-            return
+
+        else:
+            self.iv = iv
+            if is_python_2() == False: 
+                iv = iv.encode('latin-1')
+            if mode == AES.MODE_CTR:
+                self.aes = (
+                    AES.new(key, mode, counter=self.counter_inc)
+                    if counter is None
+                    else AES.new(key, mode, counter=counter)
+                )
+            else:
+                self.aes = AES.new(key, mode, iv)
+        return
     def counter_inc(self):
         curr_iv = expand(inttostring((stringtoint(self.iv))), 128, "LEFT")
         self.iv = expand(inttostring((stringtoint(self.iv)+1)), 128, "LEFT")

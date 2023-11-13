@@ -84,15 +84,9 @@ def gen_aes_test(name=None, mode=None, to_check=None, msg=None, key=None, random
     else:
         aes_test_string += (32*'\x00')
     # Mode
-    if mode != None:
-        aes_test_string += chr(mode)
-    else:
-        aes_test_string += chr(0) 
+    aes_test_string += chr(mode) if mode != None else chr(0)
     # To check
-    if to_check != None:
-        aes_test_string += chr(to_check)
-    else:
-        aes_test_string += chr(0)
+    aes_test_string += chr(to_check) if to_check != None else chr(0)
     # Message
     if msg != None:
         if len(msg) != 16:
@@ -103,7 +97,7 @@ def gen_aes_test(name=None, mode=None, to_check=None, msg=None, key=None, random
         aes_test_string += chr(0) + ('\x00'*16)
     # Key
     if key != None:
-        if (len(key) != 16) and (len(key) != 24) and (len(key) != 32):
+        if len(key) not in [16, 24, 32]:
             print("Error: unsupported key length %d != 16, 24 or 32" % len(key))
             sys.exit(-1)
         aes_test_string += chr(len(key)) + key + ((32-len(key))*'\x00')
@@ -142,10 +136,7 @@ def gen_aes_test(name=None, mode=None, to_check=None, msg=None, key=None, random
     else:
         aes_test_string += ('\x00'*4)
     # Expected state
-    if exp_state != None:
-        aes_test_string += chr(exp_state)
-    else:
-        aes_test_string += chr(0)
+    aes_test_string += chr(exp_state) if exp_state != None else chr(0)
     # Expected key counter
     if exp_ctr_key != None:
         if exp_ret >= (0x1 << 32):

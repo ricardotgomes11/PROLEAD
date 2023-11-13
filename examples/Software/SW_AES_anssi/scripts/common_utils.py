@@ -12,10 +12,7 @@ def handler(signal, frame):
     exit(0)
 
 def is_python_2():
-    if sys.version_info[0] < 3:
-        return True
-    else:
-        return False
+    return sys.version_info[0] < 3
 
 def getbitlen(bint):
     return int(bint).bit_length()
@@ -45,13 +42,12 @@ def expand(bitstring, bitlen, direction):
     bytelen = int(math.ceil(bitlen / 8.))
     if len(bitstring) >= bytelen:
         return bitstring
+    if direction == "LEFT":
+        return ((bytelen-len(bitstring))*"\x00") + bitstring
+    elif direction == "RIGHT":
+        return bitstring + ((bytelen-len(bitstring))*"\x00")
     else:
-        if direction == "LEFT":
-            return ((bytelen-len(bitstring))*"\x00") + bitstring
-        elif direction == "RIGHT":
-            return bitstring + ((bytelen-len(bitstring))*"\x00")
-        else:
-            raise Exception("Error: unknown direction "+direction+" in expand")
+        raise Exception(f"Error: unknown direction {direction} in expand")
 
 # Helper to execute an external command
 def sys_cmd(cmd):
@@ -64,7 +60,7 @@ def sys_cmd(cmd):
         timer.cancel()
     p.wait()
     if p.returncode != 0:
-        print("Error when executing command: "+cmd)
+        print(f"Error when executing command: {cmd}")
         print("Exec Trace:\n"+out)
         sys.exit(-1)
     return out
@@ -77,9 +73,8 @@ def sys_rm_file(file_path):
 
 # Read a string from a file
 def read_in_file(infilename):
-    infile = open(infilename, 'rb')
-    data = infile.read()
-    infile.close()
+    with open(infilename, 'rb') as infile:
+        data = infile.read()
     if is_python_2() == False:
         data = data.decode('latin-1')
     return data
@@ -88,9 +83,8 @@ def read_in_file(infilename):
 def save_in_file(data, outfilename):
     if is_python_2() == False:
         data = data.encode('latin-1')
-    outfile = open(outfilename, 'wb')
-    outfile.write(data)
-    outfile.close()
+    with open(outfilename, 'wb') as outfile:
+        outfile.write(data)
 
 # Helper to generate a random string with proper entropy
 def gen_rand_string(size):

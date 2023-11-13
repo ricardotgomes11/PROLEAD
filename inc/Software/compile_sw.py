@@ -20,10 +20,10 @@ BINARY_PATH = "../../binary"
 if not os.path.exists(BINARY_PATH):
     os.mkdir(BINARY_PATH)
 elif not os.path.isdir(BINARY_PATH):
-    raise FileExistsError("'{}' is not a directory.".format(BINARY_PATH))
+    raise FileExistsError(f"'{BINARY_PATH}' is not a directory.")
 
 if(sys.argv[-1] == '0'):
-    
+
     LINKER_PATH = sys.argv[1]
 
     #generate source file list for gcc call
@@ -57,10 +57,10 @@ else:
 
 
 # create disassembly for looking up armory results later
-with open(BINARY_PATH + "/disassembled.txt", "w") as dis_file:
+with open(f"{BINARY_PATH}/disassembled.txt", "w") as dis_file:
     sub.run(
-            ["arm-none-eabi-objdump", BINARY_PATH + "/binary.elf",  "-d"],
-            stdout=dis_file,
-            check=True,
-            )
+        ["arm-none-eabi-objdump", f"{BINARY_PATH}/binary.elf", "-d"],
+        stdout=dis_file,
+        check=True,
+    )
 
